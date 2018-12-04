@@ -6,7 +6,7 @@ class App extends Component {
   state = {
     time: 0,
     sortAscend: true,
-    sortKey: "PM2.5_AVG",
+    sortKey: "SiteName",
     table: "",
     apiData: []
   };
@@ -79,12 +79,15 @@ class App extends Component {
   sortData = data => {
     this.setState({ apiData: data });
     return new Promise((resolve, reject) => {
-      let sorted = data.sort(
-        (a, b) =>
-          this.state.sortAscend
-            ? a[this.state.sortKey] - b[this.state.sortKey]
-            : b[this.state.sortKey] - a[this.state.sortKey]
-      );
+      let sorted = data.sort((a, b) => {
+        if (a[this.state.sortKey] < b[this.state.sortKey]) {
+          return this.state.sortAscend ? -1 : 1;
+        }
+        if (a[this.state.sortKey] > b[this.state.sortKey]) {
+          return this.state.sortAscend ? 1 : -1;
+        }
+        return 0;
+      });
       resolve(sorted);
     });
   };
